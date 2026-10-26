@@ -1,0 +1,27 @@
+{
+    "ret_code": 0,
+    "message": "success. ",
+    "data": {
+        "orders": [
+            {
+                "order_type": 1,
+                "tracking_no": "MY06058790760A",
+                "order_id": "LRDZ-PROBE-001",
+                "status": "Canceled",
+                "status_code": "7001",
+                "tracking_link": "https://uat.spx.com.my/track?MY06058790760A",
+                "order_id_link": "https://uat.spx.com.my/track?LRDZ-PROBE-001",
+                "base_info": {"service_type": 1, "product_id": null},
+                "fulfillment_info": {"payment_role": 1, "cod_collection": 0, "cod_amount": 0, "collect_type": 2, "pickup_time": 0, "pickup_time_range_id": 0},
+                "parcel_info": {"parcel_weight": 1.5, "parcel_length": 20, "parcel_width": 15, "parcel_height": 10, "parcel_item_name": "Goods", "parcel_item_quantity": 1, "parcel_value": 100},
+                "routes": [
+                    {"status": "Canceled", "status_code": "7001", "message": "Pickup request has been cancelled", "timestamp": 1792970811, "driver_name": "", "driver_phone_number": ""},
+                    {"status": "Pending Pickup", "status_code": "1001", "message": " Sender is preparing to ship your parcel", "timestamp": 1792970787, "driver_name": "", "driver_phone_number": ""}
+                ],
+                "sort_code_info": {"r_first_sort_code": "KV4-SHA", "r_third_sort_code": "", "return_first_sort_code": "MHS-PCH"},
+                "edd_info": {"edd_min": 0, "edd_max": 0}
+            }
+        ],
+        "fail_list": []
+    }
+}

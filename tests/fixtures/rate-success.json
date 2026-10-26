@@ -1,0 +1,1 @@
+{"ret_code":0,"message":"success. ","data":{"orders":[{"order_id":"","estimated_shipping_fee":6.89,"basic_shipping_fee":6.89,"cod_service_fee":0,"insurance_service_fee":0,"vat_fee":0.39000000000000057,"estimated_distance":0,"voucher_shipping_fee":0,"edt_max":3,"edt_min":1}],"fail_list":[]}}

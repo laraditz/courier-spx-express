@@ -1,0 +1,1 @@
+{"ret_code":0,"message":"success. ","data":{"tracking_no_list":["MY06511492474A","MY06058790760A"],"fail_list":[{"ret_code":13001,"message":"MismatchedSpxTn","tracking_no":"NOPE123"}]}}
