@@ -73,9 +73,10 @@ class SpxExpressDriver implements CourierDriver, HandlesWebhooks, ExtractsWebhoo
      * Supported $payload->meta keys:
      *  - cod_amount (float): collect this much on delivery (MY limit RM500, selected postcodes only)
      *  - voucher_code (string)
-     *  - pickup_time (int) + pickup_time_range_id (int): book this exact pickup slot,
-     *    skipping the timeslot lookup. pickup_time_range_id alone picks that slot on
-     *    the resolved day.
+     *  - pickup_time (int), optionally with pickup_time_range_id (int): sent as-is,
+     *    skipping the timeslot lookup. For SPX Malaysia's date-only pickup, send
+     *    pickup_time 1 alone. pickup_time_range_id alone picks that slot on the
+     *    resolved day.
      */
     public function createShipment(ShipmentPayload $payload): ShipmentResult
     {
@@ -388,9 +389,11 @@ class SpxExpressDriver implements CourierDriver, HandlesWebhooks, ExtractsWebhoo
     }
 
     /**
-     * The pickup_time / pickup_time_range_id pair SPX requires for a pickup.
+     * The pickup_time / pickup_time_range_id SPX requires for a pickup.
      *
-     * An explicit pair in meta is sent as-is. Otherwise the slot is looked up: the
+     * An explicit pickup_time in meta is sent as-is, with pickup_time_range_id only
+     * when given: SPX Malaysia has no time slots and asks for pickup_time 1 alone,
+     * picking the day from its cutoff. Otherwise the slot is looked up: the
      * day matching scheduledAt (in Malaysian time) or, without one, the first day
      * offering any slot. Failing rather than falling back to a drop-off — the
      * sender asked for a rider, and silently booking a walk-in would leave the
@@ -402,11 +405,10 @@ class SpxExpressDriver implements CourierDriver, HandlesWebhooks, ExtractsWebhoo
     {
         $meta = $payload->meta;
 
-        if (isset($meta['pickup_time'], $meta['pickup_time_range_id'])) {
-            return [
-                'pickup_time'          => (int) $meta['pickup_time'],
-                'pickup_time_range_id' => (int) $meta['pickup_time_range_id'],
-            ];
+        if (isset($meta['pickup_time'])) {
+            return ['pickup_time' => (int) $meta['pickup_time']] + (isset($meta['pickup_time_range_id'])
+                ? ['pickup_time_range_id' => (int) $meta['pickup_time_range_id']]
+                : []);
         }
 
         $wantedDay = $payload->scheduledAt?->copy()->setTimezone(self::TIMEZONE)->format('Y-m-d');

@@ -2,7 +2,13 @@
 
 All notable changes to `laraditz/courier-spx-express` will be documented in this file.
 
-## Unreleased
+## 1.0.1 - 2026-11-03
+
+### Changed
+
+- An explicit `meta['pickup_time']` is now sent as-is on its own, with `pickup_time_range_id` only when given, and no `get_pickup_time` lookup. This supports SPX Malaysia's date-only pickup (`pickup_time` 1, no range id). Callers that send both keys, or neither, behave as before.
+
+## 1.0.0 - 2026-10-26
 
 ### Added
 
