@@ -2,7 +2,7 @@
 
 All notable changes to `laraditz/courier-spx-express` will be documented in this file.
 
-## Unreleased
+## 1.0.1 - 2026-11-03
 
 ### Changed
 
