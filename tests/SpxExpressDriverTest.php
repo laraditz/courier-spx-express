@@ -215,6 +215,25 @@ class SpxExpressDriverTest extends TestCase
         $this->assertSame(1793088000, $calls[0][1]['orders'][0]['fulfillment_info']['pickup_time']);
     }
 
+    public function test_pickup_sends_a_date_only_pickup_time_without_a_slot_or_lookup(): void
+    {
+        // SPX Malaysia has no time slots: it asks for pickup_time 1 and no pickup_time_range_id,
+        // then picks the day from its cutoff.
+        $driver = $this->driver(['order/batch_create_order' => $this->fixture('create-shipment-success')], $calls);
+
+        $driver->createShipment($this->payload([
+            'fulfillment' => FulfillmentMode::Pickup,
+            'meta'        => ['pickup_time' => 1],
+        ]));
+
+        $fulfillment = $calls[0][1]['orders'][0]['fulfillment_info'];
+
+        $this->assertCount(1, $calls);
+        $this->assertSame(1, $fulfillment['pickup_time']);
+        $this->assertArrayNotHasKey('pickup_time_range_id', $fulfillment);
+        $this->assertArrayNotHasKey('pickup_time_range', $fulfillment);
+    }
+
     public function test_pickup_without_an_offered_slot_fails_rather_than_booking_a_drop_off(): void
     {
         $driver = $this->driver(['order/get_pickup_time' => $this->fixture('pickup-timeslots')]);

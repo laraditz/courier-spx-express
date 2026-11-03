@@ -151,10 +151,18 @@ SPX warns that an order can take a few seconds after creation before `track()` o
 `ShipmentPayload::$fulfillment` maps to SPX's `collect_type`. Without it, `default_fulfillment` applies.
 
 - **Drop-off** (`FulfillmentMode::Dropoff`, `collect_type` 2): the sender takes the parcel to an SPX drop-off point. No timeslot is needed.
-- **Pickup** (`FulfillmentMode::Pickup`, `collect_type` 1): SPX requires a timeslot. The driver chooses one in this order:
-  1. `meta['pickup_time']` + `meta['pickup_time_range_id']`, if both are given, sent as-is.
+- **Pickup** (`FulfillmentMode::Pickup`, `collect_type` 1): SPX requires a pickup time. The driver chooses one in this order:
+  1. `meta['pickup_time']`, if given, sent as-is, together with `meta['pickup_time_range_id']` when that is given too.
   2. Otherwise it calls `get_pickup_time` and takes the day matching `scheduledAt` (compared in Malaysian time), or the first day with any slot if `scheduledAt` is null. If `meta['pickup_time_range_id']` is set, it takes that slot on the day; otherwise the first slot.
   3. If no slot is found, it throws `InvalidPayloadException`. It never quietly downgrades to a drop-off, because then nobody comes to collect the parcel.
+
+SPX Malaysia currently has no pickup time slots. It books pickups by date from a cutoff (3:00 pm MYT: before it, D+0 or D+1; after it, D+1 or D+2) and asks for `pickup_time` set to `1` with no `pickup_time_range_id`:
+
+```php
+new ShipmentPayload(/* ... */, meta: ['pickup_time' => 1], fulfillment: FulfillmentMode::Pickup);
+```
+
+Where slots are offered, list them and send the chosen pair:
 
 ```php
 $slots = $spx->getPickupTimeslots();
